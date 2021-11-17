@@ -9,6 +9,7 @@ import pandas as pd
 import requests
 
 def serve_layout():
+    
     layout = html.Div([
                         html.Div(id='none',children=[],style={'display': 'none'})
                         , dbc.Col(
