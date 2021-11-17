@@ -8,7 +8,7 @@ from utils.utils_login import loginizer
 
 def serve_layout():
     index_login = html.Div([
-                            dbc.Row([html.H1("Login Admin Digitalia", id="title", style={"color":"#1b2b58", "font-size":"28px"})],
+                            dbc.Row([html.H1("Login Portal Digitalia", id="title", style={"color":"#1b2b58", "font-size":"28px"})],
                                     justify = 'center'),
                             dbc.Row([
                                     dbc.Col([dbc.Form([
