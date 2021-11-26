@@ -9,7 +9,7 @@ import pandas as pd
 import requests
 
 def serve_layout():
-    
+
     layout = html.Div([
                         html.Div(id='none',children=[],style={'display': 'none'})
                         , dbc.Col(
@@ -32,7 +32,9 @@ def init_callbacks(dash_app):
     @dash_app.callback(Output('table-orders-row', 'children'),
     [Input('none', 'children')])
     def table(none):
+        print("start table")
         df_tickets = utils_google.read_ws_data(utils_google.open_ws("Base_general_Digitalia", "Proyectos"))
         df_tickets = df_tickets.astype(str)
         print(df_tickets)
+        print("finished table correctly")
         return utils.create_data_table(df = df_tickets, id = "table-projects")

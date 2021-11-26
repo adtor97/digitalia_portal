@@ -1,4 +1,4 @@
-from dashboards import login, admin
+from dashboards import login, admin, virus
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -58,6 +58,8 @@ login.init_callbacks(app)
 admin_layout = admin.serve_layout()
 admin.init_callbacks(app)
 
+virus_layout = virus.serve_layout()
+virus.init_callbacks(app)
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
@@ -78,6 +80,9 @@ def display_page(pathname):
     if pathname.lower() == '/admin' and 'admin' in user["views"]:
         app.title = "Admin"
         return admin_layout
+    elif pathname.lower() == '/virus' and 'virus' in user["views"]:
+        app.title = "Virus"
+        return virus_layout
     else:
         return index_layout
     # You could also return a 404 "URL not found" page here
@@ -87,7 +92,7 @@ def display_page(pathname):
 def display_links(none):
     user = session["user"]
     views = [
-            {"name":"Admin", "path":"admin"},
+            {"name":"Admin", "path":"admin"}, {"name":"Virus", "path":"virus"}
             ]
 
     links = [utils.link_format(view["name"], view["path"]) for view in views if view["path"] in user["views"]]
