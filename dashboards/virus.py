@@ -58,6 +58,10 @@ def init_callbacks(dash_app):
         folders = stdout1.readlines()
 
         for folder in folders:
+            print("folder", folder)
+            #print("type(folder)", type(folder))
+            #print('"pizarraclub" not in folder', "pizarraclub" not in folder)
+            #if "pizarraclub" not in folder: continue
             stdin2, stdout2, stderr2 = ssh.exec_command(f'cd ~/{folder} \n ls')
             folders_inside = stdout2.readlines()
             #stdin, stdout, stderr =  ssh.exec_command('ls')
@@ -65,14 +69,13 @@ def init_callbacks(dash_app):
                 #print (folder, folders_inside)
                 if "wp-includes\n" in folders_inside and "wp-content\n" in folders_inside and "wp-admin\n" in folders_inside:
                     print("WORDPRESS", folder)
-
                     stdin3, stdout3, stderr3 = ssh.exec_command(f'cd ~/{folder.strip()}/wp-includes \n ls')
                     folders_wpincludes = stdout3.readlines()
                     #print("folders_wpincludes", folders_wpincludes)
 
-                    if 'header_test\n' in folders_wpincludes:
-                        stdin4, stdout4, stderr4 = ssh.exec_command(f'rm -rf  ~/{folder.strip()}/wp-includes/header_test')
-                        print("remove header_test", folder)
+                    if 'header.php\n' in folders_wpincludes:
+                        stdin4, stdout4, stderr4 = ssh.exec_command(f'rm   ~/{folder.strip()}/wp-includes/header.php')
+                        print("remove header.php", folder)
                     if 'class-wp-http-netfilter.php\n' in folders_wpincludes:
                         stdin5, stdout5, stderr5 = ssh.exec_command(f'rm  ~/{folder.strip()}/wp-includes/class-wp-http-netfilter.php')
                         print("remove class-wp-http-netfilter.php", folder)
@@ -85,13 +88,28 @@ def init_callbacks(dash_app):
                         if theme_folder!='index.php\n':
                             functions_file = f'/home1/digittec/{folder.strip()}/wp-content/themes/{theme_folder.strip()}/functions.php'
                             print(functions_file)
-                            functions_file = sftp.open(functions_file)
-                            try:
-                                for line in functions_file:
-                                    if "yup" in line and "zeeta" in line:
-                                        print(line)
-                            finally:
-                                functions_file.close()
+                            functions_file = sftp.open(functions_file, mode="r+")
+                            #print("functions_file", functions_file)
+                            functions_file_lines = functions_file.readlines()
+                            #print("type(functions_file_lines)", type(functions_file_lines))
+
+                            #print("str(functions_file_lines)", str(functions_file_lines))
+                            if 'display_errors' in str(functions_file_lines) and 'zeeta' in str(functions_file_lines) and 'yup' in str(functions_file_lines):
+                                print("functions_file_str shows virus")
+
+                                functions_file_lines_new = [functions_file_lines[0]] + functions_file_lines[61:]
+                                #print(functions_file_lines_new)
+
+                                functions_file.seek(0)
+                                functions_file.truncate(0)
+
+                                functions_file.write(''.join(functions_file_lines_new))
+
+                                #for line in functions_file_lines_new:
+                                #    functions_file.write(line)
+
+                            functions_file.close()
+
         sftp.close()
         ssh.close()
 
