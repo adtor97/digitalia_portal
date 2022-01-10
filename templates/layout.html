@@ -40,6 +40,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="/admin">Admin</a>
+              <a class="dropdown-item" href="/virus">Virus</a>
             </div>
           </li>
 
@@ -113,7 +114,20 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script>
+    function sales_vis_fat(){
+                              var path = window.location.pathname;
+                              if(path.indexOf("experiencia_2") != -1){
+                                                                      var header = document.getElementsByClassName("navbar")[0];
+                                                                      header.style["display"] = "none";
 
+                                                                      var container = document.getElementsByClassName("container")[0];
+                                                                      container.style["max-width"] = "1000px";
+                                                                    }
+                            };
+                            
+    window.addEventListener('load', sales_vis_fat);
+    </script>
   </body>
 </html>
 
@@ -142,9 +156,9 @@ body{
 }
 
 body .container{
-  width: 95% !important;
-  min-width: 95% !important;
-  max-width: 95% !important;
+  width: 90%;
+  min-width: 90%;
+  max-width: 90%;
 }
 #title{
   text-align:center;
