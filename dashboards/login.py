@@ -39,9 +39,9 @@ def init_callbacks(dash_app):
         if n_clicks is None:
             print("finished login_result correctly")
             return None
-        if username is None or password is None:
+        if username is None or username == "" or password is None or password == "":
             print("finished login_result correctly")
-            return html.P(children=["Usuario o contraseña equivocado, por favor vuelve a intentar."], style={"color":"red", 'margin-left':'auto','margin-right':'auto', 'margin-top':'5px'})
+            return html.P(children=["Es necesario ingresar usuario y contraseña, por favor vuelva a intentar."], style={"color":"red", 'margin-left':'auto','margin-right':'auto', 'margin-top':'5px'})
         login_result = loginizer(username, password)
         #print(login_result)
         if login_result == False:

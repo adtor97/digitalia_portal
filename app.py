@@ -1,4 +1,4 @@
-from dashboards import login, admin, virus
+from dashboards import login, admin, virus, encuesta_temporal
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -61,6 +61,9 @@ admin.init_callbacks(app)
 virus_layout = virus.serve_layout()
 virus.init_callbacks(app)
 
+#encuesta_temporal_layout = encuesta_temporal_layout.serve_layout()
+#encuesta_temporal_layout.init_callbacks(app)
+
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
@@ -72,15 +75,19 @@ def display_page(pathname):
         except: pass
         return login_layout
 
+    if pathname.lower() == '/encuesta_temporal':
+        app.title = "Encuesta temporal"
+        return encuesta_temporal_layout
+
     try:
         user = session["user"]
     except:
         return login_layout
 
-    if pathname.lower() == '/admin' and 'admin' in user["views"]:
+    if pathname.lower() == '/admin' and 'admin' in user["usuario_vistas"]:
         app.title = "Admin"
         return admin_layout
-    elif pathname.lower() == '/virus' and 'virus' in user["views"]:
+    elif pathname.lower() == '/virus' and 'virus' in user["usuario_vistas"]:
         app.title = "Virus"
         return virus_layout
     else:
@@ -95,7 +102,7 @@ def display_links(none):
             {"name":"Admin", "path":"admin"}, {"name":"Virus", "path":"virus"}
             ]
 
-    links = [utils.link_format(view["name"], view["path"]) for view in views if view["path"] in user["views"]]
+    links = [utils.link_format(view["name"], view["path"]) for view in views if view["path"] in user["usuario_vistas"]]
     links = list(links)
     return links
 
