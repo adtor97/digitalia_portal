@@ -363,6 +363,7 @@ def init_callbacks(dash_app):
         df_users = utils_google.read_ws_data(utils_google.open_ws("base_1", "usuario"))
         df_users = pd.concat([df_users, df_new_user])
         df_users["usuario_id"] = df_users.reset_index(drop=True).index+1
+        df_users["usuario_tipo_id"] = df_users["usuario_tipo_id"].astype(float)
         user_id = df_users["usuario_id"].values[-1]
         utils_google.pandas_to_sheets(df_users, utils_google.open_ws("base_1", "usuario"), clear = True)
 
@@ -376,6 +377,8 @@ def init_callbacks(dash_app):
         df_user_org = utils_google.read_ws_data(utils_google.open_ws("base_1", "usuario_organizacion"))
         df_user_org = pd.concat([df_user_org, df_new_user_org])
         df_user_org["usuario_organizacion_id"] = df_user_org.reset_index(drop=True).index+1
+        df_user_org["usuario_id"] = df_user_org["usuario_id"].astype(float)
+        df_user_org["organizacion_id"] = df_user_org["organizacion_id"].astype(float)
         utils_google.pandas_to_sheets(df_user_org, utils_google.open_ws("base_1", "usuario_organizacion"), clear = True)
 
         print("Finished send_info correctly 3")
