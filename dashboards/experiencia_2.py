@@ -363,11 +363,20 @@ def init_callbacks(dash_app):
         df_users = utils_google.read_ws_data(utils_google.open_ws("base_1", "usuario"))
         df_users = pd.concat([df_users, df_new_user])
         df_users["usuario_id"] = df_users.reset_index(drop=True).index+1
+        user_id = df_users["usuario_id"].values[-1]
         utils_google.pandas_to_sheets(df_users, utils_google.open_ws("base_1", "usuario"), clear = True)
 
         df_orgs = utils_google.read_ws_data(utils_google.open_ws("base_1", "organizacion"))
         df_orgs = pd.concat([df_orgs, df_new_org])
         df_orgs["organizacion_id"] = df_orgs.reset_index(drop=True).index+1
+        org_id = df_orgs["organizacion_id"].values[-1]
         utils_google.pandas_to_sheets(df_orgs, utils_google.open_ws("base_1", "organizacion"), clear = True)
+
+        df_new_user_org = pd.DataFrame(data=[[user_id, org_id]], columns = ["usuario_id", "organizacion_id"])
+        df_user_org = utils_google.read_ws_data(utils_google.open_ws("base_1", "usuario_organizacion"))
+        df_user_org = pd.concat([df_user_org, df_new_user_org])
+        df_user_org["usuario_organizacion_id"] = df_user_org.reset_index(drop=True).index+1
+        utils_google.pandas_to_sheets(df_user_org, utils_google.open_ws("base_1", "usuario_organizacion"), clear = True)
+
         print("Finished send_info correctly 3")
         return "Has llenado el formulario correctamente, ¡muchas gracias!"
