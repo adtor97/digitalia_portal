@@ -10,15 +10,24 @@ from utils import utils_google
 def serve_layout():
     index = html.Div(
                         [
+                            #Logo
                             dbc.Row(
                                     [
-                                    html.Img(
-                                            src="https://digitaliatec.com/wp-content/uploads/2021/09/logo-nuevo-grande.png"
-                                            , style={"width":"33%", "minWidth":"200px"}
+                                    html.Div(
+                                            dcc.Link(
+                                                    html.Img(
+                                                            src="https://digitaliatec.com/wp-content/uploads/2021/09/logo-nuevo-grande.png"
+                                                            , style={"width":"25vw", "minWidth":"200px"}
+                                                            )
+                                                    , href="https://digitaliatec.com?utm_source=portal&utm_medium=logo&utm_campaign=experiencia_2"
+                                                    , target="_blank"
+                                                    )
+                                            , style={"marginRight":"auto", "marginLeft":"auto"}
                                             )
                                     ]
                                     , justify = 'center'
                                     )
+                            #Title
                             , dbc.Row(
                                     [
                                     html.H1(
@@ -29,6 +38,7 @@ def serve_layout():
                                     ]
                                     , justify = 'center'
                                     )
+                            #Description
                             , dbc.Row(
                                     [
                                     html.Div(
@@ -42,7 +52,7 @@ def serve_layout():
                                             )
                                     ],
                                     justify = 'center')
-
+                            #Form
                             , dbc.Row(
                                         [
                                         dbc.Col(
@@ -51,6 +61,7 @@ def serve_layout():
                                                                 [
                                                                 html.Div(
                                                                             [
+                                                                                #Form email
                                                                                 html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -68,6 +79,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
+                                                                                #Form names
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -85,7 +97,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form lastnames
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -103,7 +115,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form prefered name
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -121,7 +133,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form phone
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -139,7 +151,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form role
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -157,7 +169,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form ID type
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -186,7 +198,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form ID
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -204,7 +216,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form organization name
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -222,7 +234,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form organization RUC
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -240,7 +252,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form organization address
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -258,7 +270,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
+                                                                                #Form organization description
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
@@ -276,8 +288,7 @@ def serve_layout():
                                                                                             ]
                                                                                             , className = "form-input-div"
                                                                                         )
-
-                                                                                #---------------------------------
+                                                                                #Form send button and result
                                                                                 , html.Div(
                                                                                             [
                                                                                                 html.Button(
@@ -330,16 +341,19 @@ def init_callbacks(dash_app):
                             , State('form-org_desc-experiencia_2', 'value')
                         ]
                         , prevent_initial_callback=True
-    )
+                    )
     def send_info(n_clicks, email, names, lastnames, name, phone, role, tipo_doc, doc, org, RUC, org_direc, org_desc):
         print("Start send_info")
         if n_clicks==0:
+            print("Finished send_info correctly 1")
             return None
 
         answers = [email, names, lastnames, name, phone, role, tipo_doc, doc, org, RUC, org_direc, org_desc]
         answers_none = [x for x in answers if (x is None) or (x=="")]
 
-        if len(answers_none)>0: return "Parece que te falta llenar un campo, por favor ingresa todos los datos."
+        if len(answers_none)>0:
+            print("Finished send_info correctly 2")
+            return "Parece que te falta llenar un campo, por favor ingresa todos los datos."
 
         df_new_user = pd.DataFrame(data=[[email, names, lastnames, name, phone, role, 2, tipo_doc, doc]], columns = ["usuario_email", "usuario_nombres", "usuario_apellidos", "usuario_nombre_preferido", "usuario_numero", "usuario_rol", "usuario_tipo_id", "usuario_tipo_doc", "usuario_doc"])
         print(df_new_user)
@@ -355,5 +369,5 @@ def init_callbacks(dash_app):
         df_orgs = pd.concat([df_orgs, df_new_org])
         df_orgs["organizacion_id"] = df_orgs.reset_index(drop=True).index+1
         utils_google.pandas_to_sheets(df_orgs, utils_google.open_ws("base_1", "organizacion"), clear = True)
-
+        print("Finished send_info correctly 3")
         return "Has llenado el formulario correctamente, ¡muchas gracias!"
