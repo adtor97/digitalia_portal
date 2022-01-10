@@ -1,4 +1,4 @@
-from dashboards import login, admin, virus, encuesta_temporal
+from dashboards import login, admin, virus, experiencia_2
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -61,8 +61,8 @@ admin.init_callbacks(app)
 virus_layout = virus.serve_layout()
 virus.init_callbacks(app)
 
-#encuesta_temporal_layout = encuesta_temporal_layout.serve_layout()
-#encuesta_temporal_layout.init_callbacks(app)
+experiencia_2_layout = experiencia_2.serve_layout()
+experiencia_2.init_callbacks(app)
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
@@ -75,9 +75,9 @@ def display_page(pathname):
         except: pass
         return login_layout
 
-    if pathname.lower() == '/encuesta_temporal':
+    if pathname.lower() == '/experiencia_2':
         app.title = "Encuesta temporal"
-        return encuesta_temporal_layout
+        return experiencia_2_layout
 
     try:
         user = session["user"]
@@ -107,4 +107,4 @@ def display_links(none):
     return links
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
