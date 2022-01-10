@@ -12,6 +12,15 @@ def serve_layout():
                         [
                             dbc.Row(
                                     [
+                                    html.Img(
+                                            src="https://digitaliatec.com/wp-content/uploads/2021/09/logo-nuevo-grande.png"
+                                            , style={"width":"33%", "minWidth":"200px"}
+                                            )
+                                    ]
+                                    , justify = 'center'
+                                    )
+                            , dbc.Row(
+                                    [
                                     html.H1(
                                             "Experiencia Digitalia 2.0"
                                             , id="title"
@@ -116,6 +125,24 @@ def serve_layout():
                                                                                 , html.Div(
                                                                                             [
                                                                                                 dbc.Label(
+                                                                                                            "Ingresa tu número de celular"
+                                                                                                            , html_for="form-phone-experiencia_2"
+                                                                                                            , className="form-label"
+                                                                                                            , id="form-phone-label-experiencia_2"
+                                                                                                        )
+                                                                                                , dbc.Input(
+                                                                                                            type="text"
+                                                                                                            , id="form-phone-experiencia_2"
+                                                                                                            , placeholder="número de celular"
+                                                                                                            , className="form-input"
+                                                                                                        )
+                                                                                            ]
+                                                                                            , className = "form-input-div"
+                                                                                        )
+
+                                                                                , html.Div(
+                                                                                            [
+                                                                                                dbc.Label(
                                                                                                             "Ingresa tu puesto en tu organización"
                                                                                                             , html_for="form-role-experiencia_2"
                                                                                                             , className="form-label"
@@ -124,7 +151,7 @@ def serve_layout():
                                                                                                 , dbc.Input(
                                                                                                             type="text"
                                                                                                             , id="form-role-experiencia_2"
-                                                                                                            , placeholder="nombre preferido"
+                                                                                                            , placeholder="puesto de trabajo"
                                                                                                             , className="form-input"
                                                                                                         )
                                                                                             ]
@@ -293,6 +320,7 @@ def init_callbacks(dash_app):
                             , State('form-names-experiencia_2', 'value')
                             , State('form-lastnames-experiencia_2', 'value')
                             , State('form-name-experiencia_2', 'value')
+                            , State('form-phone-experiencia_2', 'value')
                             , State('form-role-experiencia_2', 'value')
                             , State('form-tipo_doc-experiencia_2', 'value')
                             , State('form-doc-experiencia_2', 'value')
@@ -303,17 +331,17 @@ def init_callbacks(dash_app):
                         ]
                         , prevent_initial_callback=True
     )
-    def send_info(n_clicks, email, names, lastnames, name, role, tipo_doc, doc, org, RUC, org_direc, org_desc):
+    def send_info(n_clicks, email, names, lastnames, name, phone, role, tipo_doc, doc, org, RUC, org_direc, org_desc):
         print("Start send_info")
         if n_clicks==0:
             return None
 
-        answers = [email, names, lastnames, name, role, tipo_doc, doc, org, RUC, org_direc, org_desc]
+        answers = [email, names, lastnames, name, phone, role, tipo_doc, doc, org, RUC, org_direc, org_desc]
         answers_none = [x for x in answers if (x is None) or (x=="")]
 
         if len(answers_none)>0: return "Parece que te falta llenar un campo, por favor ingresa todos los datos."
 
-        df_new_user = pd.DataFrame(data=[[email, names, lastnames, name, role, 2, tipo_doc, doc]], columns = ["usuario_email", "usuario_nombres", "usuario_apellidos", "usuario_nombre_preferido", "usuario_rol", "usuario_tipo_id", "usuario_tipo_doc", "usuario_doc"])
+        df_new_user = pd.DataFrame(data=[[email, names, lastnames, name, phone, role, 2, tipo_doc, doc]], columns = ["usuario_email", "usuario_nombres", "usuario_apellidos", "usuario_nombre_preferido", "usuario_numero", "usuario_rol", "usuario_tipo_id", "usuario_tipo_doc", "usuario_doc"])
         print(df_new_user)
         df_new_org = pd.DataFrame(data=[[org, RUC, org_direc, org_desc]], columns = ["organizacion_nombre", "organizacion_RUC", "organizacion_direccion", "organizacion_descripcion"])
         print(df_new_org)
