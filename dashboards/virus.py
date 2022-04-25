@@ -57,7 +57,7 @@ def init_callbacks(dash_app):
         stdin1, stdout1, stderr1 = ssh.exec_command('ls')
         folders = stdout1.readlines()
 
-        for folder in folders:
+        for folder in folders[-8:]:
             print("folder", folder)
             #print("type(folder)", type(folder))
             #print('"pizarraclub" not in folder', "pizarraclub" not in folder)
@@ -68,7 +68,7 @@ def init_callbacks(dash_app):
             if folders_inside!=folders and folders_inside!=[] and folder!='www2':
                 #print (folder, folders_inside)
                 if "wp-includes\n" in folders_inside and "wp-content\n" in folders_inside and "wp-admin\n" in folders_inside:
-                    print("WORDPRESS", folder)
+                    print("WORDPRESS", folder.strip())
                     stdin3, stdout3, stderr3 = ssh.exec_command(f'cd ~/{folder.strip()}/wp-includes \n ls')
                     folders_wpincludes = stdout3.readlines()
                     #print("folders_wpincludes", folders_wpincludes)
@@ -83,32 +83,61 @@ def init_callbacks(dash_app):
                     themes_folders = stdout5.readlines()
                     print("themes_folders", themes_folders)
                     for theme_folder in themes_folders:
-                        print (theme_folder)
+                        #print (theme_folder)
                         print("theme_folder!='index.php\n'", theme_folder!='index.php\n')
                         if theme_folder!='index.php\n':
-                            functions_file = f'/home1/digittec/{folder.strip()}/wp-content/themes/{theme_folder.strip()}/functions.php'
-                            print(functions_file)
-                            functions_file = sftp.open(functions_file, mode="r+")
-                            #print("functions_file", functions_file)
-                            functions_file_lines = functions_file.readlines()
-                            #print("type(functions_file_lines)", type(functions_file_lines))
+                            file_functions = f'/home1/digittec/{folder.strip()}/wp-content/themes/{theme_folder.strip()}/functions.php'
+                            #print(file_functions)
+                            file_functions = sftp.open(file_functions, mode="r+")
+                            #print("file_functions", file_functions)
+                            file_functions_lines = file_functions.readlines()
+                            #print("type(file_functions_lines)", type(file_functions_lines))
+                            #print("str(file_functions_lines)", str(file_functions_lines))
+                            if 'display_errors' in str(file_functions_lines) and 'zeeta' in str(file_functions_lines) and 'yup' in str(file_functions_lines):
+                                print("file_functions_str shows virus")
 
-                            #print("str(functions_file_lines)", str(functions_file_lines))
-                            if 'display_errors' in str(functions_file_lines) and 'zeeta' in str(functions_file_lines) and 'yup' in str(functions_file_lines):
-                                print("functions_file_str shows virus")
+                                file_functions_lines_new = [file_functions_lines[0]] + file_functions_lines[61:]
+                                #print(file_functions_lines_new)
 
-                                functions_file_lines_new = [functions_file_lines[0]] + functions_file_lines[61:]
-                                #print(functions_file_lines_new)
+                                file_functions.seek(0)
+                                file_functions.truncate(0)
 
-                                functions_file.seek(0)
-                                functions_file.truncate(0)
+                                file_functions.write(''.join(file_functions_lines_new))
 
-                                functions_file.write(''.join(functions_file_lines_new))
+                                #for line in file_functions_lines_new:
+                                #    file_functions.write(line)
 
-                                #for line in functions_file_lines_new:
-                                #    functions_file.write(line)
+                            file_functions.close()
 
-                            functions_file.close()
+                    '''NEW VIRUS'''
+                    file_wp_load = f'/home1/digittec/{folder.strip()}/wp-load.php'
+                    print("file_wp_load", file_wp_load)
+                    file_wp_load = sftp.open(file_wp_load, mode="r+")
+                    print("file_wp_load", file_wp_load)
+                    file_wp_load_lines = file_wp_load.readlines()
+                    print("file_wp_load_lines", file_wp_load_lines)
+                    print("file_wp_load_lines[:-1]", file_wp_load_lines[-1])
+                    file_wp_load_last_line = file_wp_load_lines[-1]
+                    if '@include("/home1/digittec/' in file_wp_load_last_line:
+                        print("wp_load show virus")
+                        file_wp_load_lines = file_wp_load_lines[:-1]
+                        print("file_wp_load_lines", file_wp_load_lines)
+
+                        file_wp_load.seek(0)
+                        file_wp_load.truncate(0)
+                        print("file_wp_load before write: ", file_wp_load)
+                        file_wp_load.write(''.join(file_wp_load_lines))
+                        file_wp_load_lines = file_wp_load.readlines()
+                        print("file_wp_load_lines 2", file_wp_load_lines)
+
+                        virus_file_init = file_wp_load_last_line.find('"/')+1
+                        virus_file_end = file_wp_load_last_line.find('.php')+4
+                        virus_file = file_wp_load_last_line[virus_file_init:virus_file_end]
+                        print("virus_file: ", virus_file)
+                        print("pre execute f'rm  {virus_file}'")
+                        stdin5, stdout5, stderr5 = ssh.exec_command(f'rm {virus_file}')
+
+
 
         sftp.close()
         ssh.close()

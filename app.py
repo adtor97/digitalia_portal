@@ -10,6 +10,7 @@ from utils import utils, utils_google
 import pydf
 import io
 import pandas as pd
+from waitress import serve
 
 #from .layout import html_layout
 
@@ -107,4 +108,5 @@ def display_links(none):
     return links
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    #app.run_server(debug=True)
+    serve(server, host="0.0.0.0", port=8050)
