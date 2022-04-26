@@ -57,7 +57,7 @@ def init_callbacks(dash_app):
         stdin1, stdout1, stderr1 = ssh.exec_command('ls')
         folders = stdout1.readlines()
 
-        for folder in folders[-8:]:
+        for folder in folders:
             print("folder", folder)
             #print("type(folder)", type(folder))
             #print('"pizarraclub" not in folder', "pizarraclub" not in folder)
