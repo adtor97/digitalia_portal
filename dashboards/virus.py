@@ -118,6 +118,7 @@ def init_callbacks(dash_app):
                     print("file_wp_load_lines", file_wp_load_lines)
                     print("file_wp_load_lines[:-1]", file_wp_load_lines[-1])
                     file_wp_load_last_line = file_wp_load_lines[-1]
+                    print("file_wp_load_last_line", file_wp_load_last_line)
                     if '@include("/home1/digittec/' in file_wp_load_last_line:
                         print("wp_load show virus")
                         file_wp_load_lines = file_wp_load_lines[:-1]
