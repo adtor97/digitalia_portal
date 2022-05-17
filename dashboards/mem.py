@@ -8,7 +8,7 @@ from utils import utils_google, utils
 import pandas as pd
 import requests
 
-df = pd.read_csv("templates/data.csv")
+#df = pd.read_csv("templates/data.csv")
 
 def serve_layout():
 
