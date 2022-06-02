@@ -31,7 +31,7 @@ def dropdown(id, className='dropdown', options=[], value=[], multi=False, placeh
 
 def create_data_table(df, id, rows=30):
     df = df.astype(str)
-    df = df.replace("None", "")
+    df = df.replace("None", "").replace('nan','')
     """Create Dash datatable from Pandas DataFrame."""
     table = dash_table.DataTable(
         id=id,
@@ -40,7 +40,7 @@ def create_data_table(df, id, rows=30):
         sort_action="native",
         sort_mode='multi',
         page_size=rows,
-        #virtualization=True,
+        virtualization=True,
         #style_cell={"fontSize":"11px", 'whiteSpace': 'normal', 'height':'35px', 'maxHeight': '35px','minWidth': '90px','maxWidth': '150px', 'overflow': 'hidden','textOverflow': 'ellipsis',},
         style_cell={
         #'whiteSpace': 'normal',
@@ -56,12 +56,13 @@ def create_data_table(df, id, rows=30):
         #editable=True,
         filter_action="native",
         #column_selectable="multi",
-        #row_selectable="multi",
+        row_selectable="single",
+        #selected_rows=[],
         #row_deletable=True,
         #page_action="native",
         #fixed_rows={"headers": True},
         #fixed_columns={'headers': True, 'data': 1},
-        export_format="csv",
+        #export_format="csv",
         #tooltip_data=[{column: {'value': str(value), 'type': 'markdown'}
         #                for column, value in row.items()}
         #                    for row in df.to_dict('records')
@@ -71,7 +72,19 @@ def create_data_table(df, id, rows=30):
                                 {
                                 'if': {'column_id': c},
                                 'display': 'none'
-                                } for c in ['id']
+                                } for c in ['id','Recomendados']
                                 ]
     )
     return table
+
+def generate_table(dataframe, max_rows=10):
+    return html.Table([
+        html.Thead(
+            html.Tr([html.Th(col) for col in dataframe.columns])
+        ),
+        html.Tbody([
+            html.Tr([
+                html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+            ]) for i in range(min(len(dataframe), max_rows))
+        ])
+    ])

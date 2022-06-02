@@ -117,7 +117,8 @@
     <script>
     function sales_vis_fat(){
                               var path = window.location.pathname;
-                              if(path.indexOf("experiencia_2") != -1){
+                              if((path.indexOf("experiencia_2") != -1) || (path.indexOf("mem") != -1) || (path.indexOf("jj") != -1))
+                                                                  {
                                                                       var header = document.getElementsByClassName("navbar")[0];
                                                                       header.style["display"] = "none";
                                                                     }
@@ -397,6 +398,32 @@ H5{
 
 .form-div .form-input-div .form-label{
   font-size:14px;
+}
+
+.inputs-row{
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  display: block;
+}
+
+.inputs-row-row{
+  padding: 5px;
+  border: solid;
+  border-width: 1px;
+  border-color: gray;
+  border-radius: 15px;
+  margin-bottom: 50px;
+}
+
+.input-col{
+    min-width: 200px;
+    flex: 100;
+    margin:10px;
+}
+
+.dt-table-container__row-1 .dash-fixed-content{
+  min-height:250px !important;
 }
 
 </style>

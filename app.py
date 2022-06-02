@@ -85,7 +85,12 @@ def display_page(pathname):
     if pathname.lower() == '/experiencia_2':
         app.title = "Encuesta temporal"
         return experiencia_2_layout
-
+    elif pathname.lower() == '/mem':
+        app.title = "MEM"
+        return mem_layout
+    elif pathname.lower() == '/jj':
+        app.title = "JJ"
+        return jj_layout
     try:
         user = session["user"]
     except:
@@ -97,12 +102,6 @@ def display_page(pathname):
     elif pathname.lower() == '/virus' and 'virus' in user["usuario_vistas"]:
         app.title = "Virus"
         return virus_layout
-    elif pathname.lower() == '/mem' and 'mem' in user["usuario_vistas"]:
-        app.title = "MEM"
-        return mem_layout
-    elif pathname.lower() == '/jj' and 'jj' in user["usuario_vistas"]:
-        app.title = "JJ"
-        return jj_layout
     else:
         return index_layout
     # You could also return a 404 "URL not found" page here
