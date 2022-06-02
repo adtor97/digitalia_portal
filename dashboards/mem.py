@@ -87,7 +87,7 @@ def serve_layout():
                         , dbc.Col(
                                 dbc.Row([
                                         html.H2(
-                                                f"Laptops sugeridas por características",
+                                                f"Laptops sugeridas por características y precio",
                                                 id="sub-title",
                                                 )
                                         ],
@@ -180,9 +180,11 @@ def init_callbacks(dash_app):
         numero_string = ' '.join(map(str, selected_rows))
         numero_int = int(numero_string)
         list_cluster = df_fila.at[numero_int,'cluster_predicted']
+        list_precio = float(df_fila.at[numero_int,'Precio Online'])
 
         df_cluster = df
         df_cluster.loc[:, 'cluster_predicted'] = list_cluster
-        df_cluster = df_cluster.head(4)
+        df_cluster = df_cluster[(df_cluster["Precio Online"]<=list_precio+500) & (df_cluster["Precio Online"]>=list_precio-500)]
+        #df_cluster = df_cluster
 
         return utils.create_data_table(df_cluster,id='table-recomendados')
