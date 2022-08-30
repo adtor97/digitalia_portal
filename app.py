@@ -126,5 +126,5 @@ def display_links(none):
     return links
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
-    #serve(server, host="0.0.0.0", port=8050)
+    #app.run_server(debug=True)
+    serve(server, host="0.0.0.0", port=8050)
