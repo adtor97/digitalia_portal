@@ -1,4 +1,4 @@
-from dashboards import login, admin, virus, experiencia_2, mem, jj
+from dashboards import login, admin, virus, experiencia_2, mem, jj, artefacta
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -71,6 +71,9 @@ mem.init_callbacks(app)
 jj_layout = jj.serve_layout()
 jj.init_callbacks(app)
 
+artefacta_layout = artefacta.serve_layout()
+artefacta.init_callbacks(app)
+
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
@@ -91,6 +94,10 @@ def display_page(pathname):
     elif pathname.lower() == '/jj':
         app.title = "JJ"
         return jj_layout
+    elif pathname.lower() == '/artefacta':
+        app.title = "Artefacta"
+        return artefacta_layout
+
     try:
         user = session["user"]
     except:
@@ -119,5 +126,5 @@ def display_links(none):
     return links
 
 if __name__ == '__main__':
-    #app.run_server(debug=True)
-    serve(server, host="0.0.0.0", port=8050)
+    app.run_server(debug=True)
+    #serve(server, host="0.0.0.0", port=8050)

@@ -40,14 +40,14 @@ def create_data_table(df, id, rows=30):
         sort_action="native",
         sort_mode='multi',
         page_size=rows,
-        virtualization=True,
+        #virtualization=True,
         #style_cell={"fontSize":"11px", 'whiteSpace': 'normal', 'height':'35px', 'maxHeight': '35px','minWidth': '90px','maxWidth': '150px', 'overflow': 'hidden','textOverflow': 'ellipsis',},
         style_cell={
         #'whiteSpace': 'normal',
         #'height': 'auto',
         'overflow': 'hidden',
         'textOverflow': 'ellipsis',
-        'maxWidth': 150,
+        'maxWidth': 200,
         'minWidth': 90,
         "fontSize":"11px"
         },
@@ -56,17 +56,17 @@ def create_data_table(df, id, rows=30):
         #editable=True,
         filter_action="native",
         #column_selectable="multi",
-        row_selectable="single",
+        #row_selectable="single",
         #selected_rows=[],
         #row_deletable=True,
         #page_action="native",
         #fixed_rows={"headers": True},
         #fixed_columns={'headers': True, 'data': 1},
-        #export_format="csv",
-        #tooltip_data=[{column: {'value': str(value), 'type': 'markdown'}
-        #                for column, value in row.items()}
-        #                    for row in df.to_dict('records')
-        #            ],
+        export_format="xlsx",
+        tooltip_data=[{column: {'value': str(value), 'type': 'markdown'}
+                        for column, value in row.items()}
+                            for row in df.to_dict('records')
+                    ],
         #tooltip_duration=None,
         style_cell_conditional=[
                                 {
@@ -88,3 +88,22 @@ def generate_table(dataframe, max_rows=10):
             ]) for i in range(min(len(dataframe), max_rows))
         ])
     ])
+
+def generate_card(value=0, title=None, id=None):
+    return dbc.Col(
+                    [
+                    dbc.Card(
+                                [
+                                dbc.CardHeader(title),
+                                dbc.CardBody(
+                                                [
+                                                html.P(value, id=f"{id}-value", className="card-value")
+                                                ]
+                                            ),
+                                ],
+                                id = id,
+                                className="card-dig"
+                            )
+                    ],
+                    #className="div-complete-inrow"
+                    )
