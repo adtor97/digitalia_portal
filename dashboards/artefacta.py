@@ -38,7 +38,7 @@ def serve_layout():
                             dbc.Col(dbc.Row(id = 'graph-products-row', style={"height":"auto", "overflow":"auto"}, justify = 'center'), width=12)
                             ])
                         , dbc.Row([
-                            dbc.Col(dbc.Row(id = 'table-products-row', style={"height":"auto", "overflow":"visible"}, justify = 'center'), width=12)
+                            dbc.Col(dbc.Row(id = 'table-products-row', style={"height":"auto", "overflow":"visible", "justify-content":"center"}), width=12)
                             ])
                         ], className = "dash-inside-container")
     return layout
@@ -104,6 +104,6 @@ def init_callbacks(dash_app):
                                                         , "xaxis_range": [0, max_price]
                                                         }
                                             )
-                            , style={"maxWidth":"95%"}
+                            , style={"width":"95%"}
                             )
                 ]
