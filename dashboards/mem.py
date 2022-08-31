@@ -115,16 +115,16 @@ def init_callbacks(dash_app):
         # df = pd.read_excel("data/laptopsv2.xlsx")
         df=df.loc[:,['Titulo','Tienda','Precio Online','Precio Normal','Marca','Tarjeta de Video','Procesador','Memoria Ram','Pulgadas Pantalla','Almacenamiento','Link','Recomendados','cluster_predicted']]
         if (marca==None) and (cluster==None):
-            return utils.create_data_table(df,id='tabla1')
+            return utils.create_data_table(df,id='tabla1', row_selectable="single")
         elif marca==None:
             df = df.loc[(df['cluster_predicted'] == cluster)]
-            return utils.create_data_table(df,id='tabla1')
+            return utils.create_data_table(df,id='tabla1', row_selectable="single")
         elif cluster==None:
             df = df.loc[(df['Marca'] == marca)]
-            return utils.create_data_table(df,id='tabla1')
+            return utils.create_data_table(df,id='tabla1', row_selectable="single")
         else:
             df = df.loc[(df['Marca'] == marca)&(df['cluster_predicted']==cluster)]
-            return utils.create_data_table(df,id='tabla1')
+            return utils.create_data_table(df,id='tabla1', row_selectable="single")
 
 
     @dash_app.callback(
@@ -159,7 +159,7 @@ def init_callbacks(dash_app):
             df_recom = df.loc[(df['Titulo'] == list_recom[i])]
             df_nuevo = df_nuevo.append(df_recom,ignore_index=True)
 
-        return utils.create_data_table(df_nuevo,id='table-recomendados')
+        return utils.create_data_table(df_nuevo,id='table-recomendados-1')
 
 
     @dash_app.callback(
@@ -187,4 +187,4 @@ def init_callbacks(dash_app):
         df_cluster = df_cluster[(df_cluster["Precio Online"]<=list_precio+500) & (df_cluster["Precio Online"]>=list_precio-500)]
         #df_cluster = df_cluster
 
-        return utils.create_data_table(df_cluster,id='table-recomendados')
+        return utils.create_data_table(df_cluster,id='table-recomendados-2')

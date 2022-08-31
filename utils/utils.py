@@ -29,7 +29,7 @@ def dropdown(id, className='dropdown', options=[], value=[], multi=False, placeh
     return dropdown
 
 
-def create_data_table(df, id, rows=30):
+def create_data_table(df, id, rows=30, row_selectable=False):
     df = df.astype(str)
     df = df.replace("None", "").replace('nan','')
     """Create Dash datatable from Pandas DataFrame."""
@@ -56,7 +56,7 @@ def create_data_table(df, id, rows=30):
         #editable=True,
         filter_action="native",
         #column_selectable="multi",
-        #row_selectable="single",
+        row_selectable=row_selectable,
         #selected_rows=[],
         #row_deletable=True,
         #page_action="native",
@@ -75,6 +75,7 @@ def create_data_table(df, id, rows=30):
                                 } for c in ['id','Recomendados']
                                 ]
     )
+    print(table)
     return table
 
 def generate_table(dataframe, max_rows=10):
