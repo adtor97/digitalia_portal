@@ -90,4 +90,5 @@ def init_callbacks(dash_app):
                         Input('dropdown-position-tests','value'),
     )
     def show_test(test):
+        if test=="" or test is None: return None
         return utils_tests.tests_values(test)
