@@ -1,4 +1,4 @@
-from dashboards import login, admin, virus, experiencia_2, mem, jj, artefacta
+from dashboards import login, admin, virus, experiencia_2, mem, jj, artefacta, tests
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -74,6 +74,9 @@ jj.init_callbacks(app)
 artefacta_layout = artefacta.serve_layout()
 artefacta.init_callbacks(app)
 
+tests_layout = tests.serve_layout()
+tests.init_callbacks(app)
+
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
@@ -97,6 +100,9 @@ def display_page(pathname):
     elif pathname.lower() == '/artefacta':
         app.title = "Artefacta"
         return artefacta_layout
+    elif pathname.lower() == '/tests':
+        app.title = "Tests"
+        return tests_layout
 
     try:
         user = session["user"]
@@ -118,7 +124,7 @@ def display_page(pathname):
 def display_links(none):
     user = session["user"]
     views = [
-            {"name":"Admin", "path":"admin"}, {"name":"Virus", "path":"virus"}, {"name":"MEM", "path":"mem"}, {"name":"JJ", "path":"jj"}
+            {"name":"Admin", "path":"admin"}, {"name":"Virus", "path":"virus"}, {"name":"Tests", "path":"tests"}, {"name":"MEM", "path":"mem"}, {"name":"JJ", "path":"jj"}
             ]
 
     links = [utils.link_format(view["name"], view["path"]) for view in views if view["path"] in user["usuario_vistas"]]
@@ -126,5 +132,5 @@ def display_links(none):
     return links
 
 if __name__ == '__main__':
-    #app.run_server(debug=True)
-    serve(server, host="0.0.0.0", port=8050)
+    app.run_server(debug=True)
+    #serve(server, host="0.0.0.0", port=8050)
