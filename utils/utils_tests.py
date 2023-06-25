@@ -4,8 +4,18 @@ import dash_bootstrap_components as dbc
 from dash import dcc
 from dash import dash_table
 from dash import html
-from utils import utils_google
-from flask import render_template, json
+from utils import utils_google, utils_chatgpt
+from flask import render_template
+import json
+
+def chat_gpt_descriptions(position):
+    chat_gpt_descriptions = {
+                                "net_react_juntoz":"",
+                                "startusa_backend_django":" IMPORTANTE: Puesto para startups estadounidenses. Tecnologías clave son Django, React, AWS. El puesto es para alguien con experiencia en Django, manejo de datos. Idealmente con manejo de herramientas cloud.",
+                                "startusa_frotend_react":""
+                            }
+    return chat_gpt_descriptions[position]
+
 
 text_example = f"""
 1. Sobre el puesto
@@ -144,6 +154,60 @@ def net_react_juntoz():
     return div
 
 def startusa_backend_django():
+    reto_temp = [
+                    html.H3("2. Reto técnico", style={"border-bottom": "2px solid #333", "padding-bottom": "10px"}),
+                    html.P("Objetivo General: Desarrollar una aplicación que utilice la API de ChatGPT para realizar una interpretación básica de los datos cargados por el usuario. La interpretación debe ser descriptiva para que el usuario pueda comprender la naturaleza de los datos."),
+                    html.P("Nivel 1: Medium Developer"),
+                    dbc.ListGroup(
+                        [
+                            dbc.ListGroupItem("Interfaz de Carga de Datos: Implementa un formulario simple para permitir a los usuarios subir archivos de datos en formato CSV."),
+                            dbc.ListGroupItem("Interpretación Básica de Datos con ChatGPT: Usa la API de ChatGPT para leer las columnas del CSV y proporcionar una descripción general de los datos."),
+                            dbc.ListGroupItem("Interfaz de Usuario Básica: Muestra los resultados de la interpretación en una página de resultados simple."),
+                            dbc.ListGroupItem("Pruebas Unitarias: Escribe pruebas unitarias para asegurar que las funcionalidades básicas estén trabajando correctamente.")
+                        ],
+                        flush=True
+                    ),
+                    html.Br(),
+                    html.P("Nivel 2: SemiSenior Developer"),
+                    dbc.ListGroup(
+                        [
+                            dbc.ListGroupItem("Interpretación de Datos Mejorada con ChatGPT: ChatGPT debe identificar el tipo de información en cada columna (por ejemplo, numérica, categórica) y sugerir posibles análisis a realizar con los datos."),
+                            dbc.ListGroupItem("Interfaz de Usuario Mejorada: Permite que los usuarios puedan seleccionar columnas específicas del CSV para su interpretación.")
+                        ],
+                        flush=True
+                    ),
+                    html.Br(),
+                    html.P("Nivel 3: Senior Developer"),
+                    dbc.ListGroup(
+                        [
+                            dbc.ListGroupItem("Autenticación Simple: Permite que los usuarios ingresen una API Key de ChatGPT para pruebas a través de un campo en la interfaz de usuario."),
+                            dbc.ListGroupItem("Mejores Prácticas de Desarrollo: Asegúrate de que tu enfoque esté basado en las mejores prácticas de desarrollo y pruebas, incluyendo principios SOLID y patrones de diseño.")
+                        ],
+                        flush=True
+                    ),
+                    html.Br(),
+                    html.P("Stack Tecnológico: Python (de preferencia Django)."),
+                    html.P("Nota: Esta versión del reto se centra en la implementación de la funcionalidad clave. Los postulantes deben demostrar su capacidad para trabajar con la API de ChatGPT y desarrollar una interfaz de usuario simple. Los niveles más avanzados introducen mejoras incrementales en la interpretación de datos y la interacción del usuario. Las pruebas unitarias son un requerimiento obligatorio para todos los niveles para asegurar la calidad del código.", style={"font-weight": "bold"})
+                ]
+
+    messages=[]
+    message_0=[{"role": "system", "content": f"Eres un sistema que genera código Dash para otro sistema."}]
+    messages.append({"role": "user", "content": "Eres un sistema que genera código Dash para otro sistema. Te voy a pasar en el siguiente mensaje un reto técnico en formato Dash para un puesto de tecnología. Quiero que después de eso me respondas una variación de ese reto en el mismo formato que te lo paso, los retos no deben ser extremadamente complejo. Debe ser del mismo nivel de dificultad pero con cambios para que no pueda haber plagio. Respóndeme solo el código de Dash en ese mismo formato porque lo quiero pasar de frente a un código de Python, por favor no agregues ni un caracter más a tu respuesta. REVISA EL MISMO FORMATO DE CODIGO" + chat_gpt_descriptions("startusa_backend_django")})
+    response_1 = utils_chatgpt.chat_chatgpt(messages)
+    print("response_1", response_1)
+    messages.append({"role": "assistant", "content": response_1})
+    messages.append({"role": "user", "content": f"Eres un sistema que genera código Dash para otro sistema. Acá va el formato. Recuerda hacer la variación solo de los textos y contenidos, no de formato de Dash. Usa exactamente el mismo formato, incluyendo el llamado de librerías y solo responde el código. Si agregas otro texto a tu mensaje fallará mi plataforma y perderé millones de dólares, usa doble comilla en vez de comilla simple: {str(reto_temp)}"})
+    new_reto = utils_chatgpt.chat_chatgpt(messages)
+
+    new_reto  = new_reto[new_reto.find("["):new_reto.rfind("]")+1]
+    print("new_reto", new_reto)
+    try:
+        new_reto = json.loads(new_reto.replace("'", '"'))
+    except:
+        new_reto = json.loads(new_reto)
+
+    print("new_reto", new_reto)
+
     div = dbc.Row(
                     [
                         dbc.Col(
@@ -170,41 +234,7 @@ def startusa_backend_django():
                             style={"padding": "40px", "background-color": "#f9f9f9", "border-radius": "10px"}
                         ),
                         dbc.Col(
-                            [
-                                html.H3("2. Reto técnico", style={"border-bottom": "2px solid #333", "padding-bottom": "10px"}),
-                                html.P("Objetivo General: Desarrollar una aplicación que utilice la API de ChatGPT para realizar una interpretación básica de los datos cargados por el usuario. La interpretación debe ser descriptiva para que el usuario pueda comprender la naturaleza de los datos."),
-                                html.P("Nivel 1: Medium Developer"),
-                                dbc.ListGroup(
-                                    [
-                                        dbc.ListGroupItem("Interfaz de Carga de Datos: Implementa un formulario simple para permitir a los usuarios subir archivos de datos en formato CSV."),
-                                        dbc.ListGroupItem("Interpretación Básica de Datos con ChatGPT: Usa la API de ChatGPT para leer las columnas del CSV y proporcionar una descripción general de los datos."),
-                                        dbc.ListGroupItem("Interfaz de Usuario Básica: Muestra los resultados de la interpretación en una página de resultados simple."),
-                                        dbc.ListGroupItem("Pruebas Unitarias: Escribe pruebas unitarias para asegurar que las funcionalidades básicas estén trabajando correctamente.")
-                                    ],
-                                    flush=True
-                                ),
-                                html.Br(),
-                                html.P("Nivel 2: SemiSenior Developer"),
-                                dbc.ListGroup(
-                                    [
-                                        dbc.ListGroupItem("Interpretación de Datos Mejorada con ChatGPT: ChatGPT debe identificar el tipo de información en cada columna (por ejemplo, numérica, categórica) y sugerir posibles análisis a realizar con los datos."),
-                                        dbc.ListGroupItem("Interfaz de Usuario Mejorada: Permite que los usuarios puedan seleccionar columnas específicas del CSV para su interpretación.")
-                                    ],
-                                    flush=True
-                                ),
-                                html.Br(),
-                                html.P("Nivel 3: Senior Developer"),
-                                dbc.ListGroup(
-                                    [
-                                        dbc.ListGroupItem("Autenticación Simple: Permite que los usuarios ingresen una API Key de ChatGPT para pruebas a través de un campo en la interfaz de usuario."),
-                                        dbc.ListGroupItem("Mejores Prácticas de Desarrollo: Asegúrate de que tu enfoque esté basado en las mejores prácticas de desarrollo y pruebas, incluyendo principios SOLID y patrones de diseño.")
-                                    ],
-                                    flush=True
-                                ),
-                                html.Br(),
-                                html.P("Stack Tecnológico: Python (de preferencia Django)."),
-                                html.P("Nota: Esta versión del reto se centra en la implementación de la funcionalidad clave. Los postulantes deben demostrar su capacidad para trabajar con la API de ChatGPT y desarrollar una interfaz de usuario simple. Los niveles más avanzados introducen mejoras incrementales en la interpretación de datos y la interacción del usuario. Las pruebas unitarias son un requerimiento obligatorio para todos los niveles para asegurar la calidad del código.", style={"font-weight": "bold"})
-                            ],
+                            new_reto,
                             lg=6,
                             md=10,
                             sm=12,
@@ -294,12 +324,10 @@ def startusa_frotend_react():
 
 
 def tests_values(test):
-    tests_values = {
-                    "net_react_juntoz":net_react_juntoz(),
-                    "startusa_backend_django":startusa_backend_django(),
-                    "startusa_frotend_react":startusa_frotend_react(),
-    }
-    try:
-        return tests_values[test]
-    except:
-        return "Test no encontrado"
+    if test=="net_react_juntoz":
+        return net_react_juntoz()
+    elif test=="startusa_backend_django":
+        return startusa_backend_django()
+    elif test=="startusa_frotend_react":
+        return startusa_frotend_react()
+    else: return "Test no encontrado"

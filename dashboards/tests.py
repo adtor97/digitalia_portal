@@ -1,94 +1,267 @@
+from utils import utils, utils_tests, utils_google, utils_chatgpt
 import dash
 import dash_bootstrap_components as dbc
-from dash import html
-from dash import dcc
-from dash.dependencies import Input, Output, State, MATCH, ALL
-from flask import request, session
-import os
+from dash import html, dcc
+from dash.dependencies import Input, Output, State
 import pandas as pd
-from utils import utils, utils_tests
+import openai
+import json
+import textwrap
 
+# Función para validar el EMAIL del usuario
+def validate_email(email_input, email_selected):
+    if email_input.lower() == email_selected.lower():
+        return True
+    else:
+        return False
+
+# Función para generar el reto técnico
+def generate_technical_challenge(position, level, example, user_input):
+    messages = [
+        {"role": "system", "content": "Eres un generador de retos técnicos cortos y creativos de tecnología en español."},
+        {"role": "user", "content": f"Necesito un reto técnico corto y específico el puesto {position} de nivel {level}. El reto debe estar estimado para 6 horas máximo, no des retos muy largos, sé creativo. Por favor escríbelo tomando en cuenta que lo leerá el candidato final. Este es un ejemplo de reto técnico: {example}. Mi experiencia y perfil es el siguiente: {user_input}."},
+    ]
+    print(messages[1]["content"])
+    response = utils_chatgpt.chat_chatgpt(messages)
+    return response
 
 def serve_layout():
-
     layout = html.Div(
+        [
+            # Título
+            dbc.Row(
+                [
+                    dbc.Col(
+                        html.H1(
+                            "Postulaciones",
+                            id="title-tests",
+                            className="text-center",
+                            style={"color":"#1b2b58", "font-size":"28px"}
+                        ),
+                        sm=12,
+                        lg=12
+                    ),
+                    dbc.Col(
+                        html.H2(
+                            "Pruebas Técnicas",
+                            id="subtitle-tests",
+                            className="text-center",
+                            style={"color":"#1b2b58", "font-size":"21px", "margin-bottom": "20px"}
+                        ),
+                        sm=12,
+                        lg=12
+                    ),
+                ],
+                justify='center',
+            ),
+
+            # Dropdown para seleccionar el nombre del usuario y Input para ingresar el EMAIL
+            dbc.Row(
+                [
+                    dbc.Col(
                         [
-                        dbc.Row(
-                                    [
-                                        dbc.Col(
-                                            html.H1(
-                                                "Tests Digitalia",
-                                                id="title-tests",
-                                                className="text-center",
-                                                style={"font-size": "48px", "color": "#333", "margin-bottom": "20px"}
-                                            ),
-                                            width=12
-                                        ),
-                                        dbc.Col(
-                                            html.P(
-                                                [
-                                                    "¡Hola! Elige el test del puesto al que postulas. Por favor, lee atentamente las indicaciones. Para consultas puedes contactar: ",
-                                                    html.A("WhatsApp", href="https://wa.me/969051542", target="_blank", style={"color": "#25D366", "text-decoration": "underline"})
-                                                ],
-                                                id="subtitle-tests",
-                                                className="text-justify",
-                                                style={"maxWidth": "600px", "margin": "0 auto", "font-size": "18px"}
-                                            ),
-                                            width=12
-                                        )
-                                    ],
-                                    justify='center',
-                                    style={"margin-top": "5%", "margin-bottom": "5%"}
-                                )
-                        , dcc.Store(
-                                    id='store-xxxx-tests'
-                                    , data=None
-                                )
-                        , dbc.Row(
-                                    [
-                                        dbc.Col(
-                                                [
-                                                    html.Label(
-                                                                html.Strong("Elige el puesto para el que deseas postular")
-                                                                , className="label"
-                                                                )
-                                                    , utils.dropdown(
-                                                                    "dropdown-position-tests"
-                                                                    , className='dropdown'
-                                                                    , options=[
-                                                                                {"label":"Marketplace - Fullstack .Net & React", "value":"net_react_juntoz"}
-                                                                                , {"label":"USA - Backend Django", "value":"startusa_backend_django"}
-                                                                                , {"label":"USA - Frontend React | React Native", "value":"startusa_frotend_react"}
-                                                                            ]
-                                                                    , value=None
-                                                                    , multi=False
-                                                                    , placeholder="Elige la posición"
-                                                                    )
-                                                ]
-                                                , sm=12
-                                                , md=10
-                                                , lg=6
-                                                )
-                                    ]
-                                    , id="row-XXXX-tests"
-                                )
-                        , dcc.Loading(
-                                    dbc.Row(
-                                                id="row-test-tests"
-                                                , style={"paddingTop":"30px", "overflow":"auto"}
-                                            )
-                                    )
-                        ]
-                        , className = "dash-inside-container"
-                        , style = {"margin-bottom":"100px"}
-                    )
+                            html.Label(
+                                html.Strong("1. Elige tu nombre"),
+                                className="label"
+                            ),
+                            dcc.Dropdown(id='dropdown-user-tests', style={'margin-bottom': '10px'}),
+                            html.Label(
+                                html.Strong("2. Ingresa tu email"),
+                                className="label"
+                            ),
+                            dcc.Input(id='input-email-tests', type='text', style={'margin-bottom': '10px'}),
+                            dcc.Loading(
+                                id="loading-validate",
+                                type="circle",
+                                children=html.Button('Validar', id='btn-validate-tests')
+                            ),
+                            html.Div(id='div-error-tests'),
+                        ],
+                        sm=12,
+                        md=6,
+                        lg=4
+                    ),
+                ],
+                style={'margin-bottom': '20px'}
+            ),
+
+            # Dropdown para seleccionar el puesto abierto y el nivel
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            html.Label(
+                                html.Strong("3. Elige el puesto al que postulas"),
+                                className="label"
+                            ),
+                            dcc.Dropdown(id='dropdown-position-tests', style={'display': 'none', 'margin-bottom': '10px'}),
+                            html.Label(
+                                html.Strong("4. Elige tu nivel"),
+                                className="label"
+                            ),
+                            dcc.Dropdown(
+                                id='dropdown-level-tests',
+                                options=[
+                                    {'label': 'Junior', 'value': 'Junior'},
+                                    {'label': 'Medium', 'value': 'Medium'},
+                                    {'label': 'SemiSenior', 'value': 'SemiSenior'},
+                                    {'label': 'Senior', 'value': 'Senior'}
+                                ],
+                                style={'display': 'none', 'margin-bottom': '10px'}
+                            ),
+                            dcc.Loading(
+                                id="loading-generate",
+                                type="circle",
+                                children=html.Button('Generar reto', id='btn-generate-tests', style={'display': 'none'})
+                            ),
+                        ],
+                        sm=12,
+                        md=6,
+                        lg=4
+                    ),
+                ],
+                style={'margin-bottom': '20px'}
+            ),
+
+            # Reto técnico generado
+            dbc.Row(
+                [
+                    dbc.Col(
+                        html.Div(id='div-challenge-tests', style={'display': 'none', 'border': '1px solid #ddd', 'padding': '20px', 'border-radius': '8px', 'background-color': '#f9f9f9', 'text-align': 'center'}),
+                        sm=12,
+                        md=12,
+                        lg=12
+                    ),
+                ],
+                style={'margin-top': '20px'}
+            ),
+
+            # Botón para resolver el reto
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dcc.Loading(
+                            id="loading-resolve",
+                            type="circle",
+                            children=html.Button('Deseo resolver el reto', id='btn-resolve-tests', style={'display': 'none'})
+                        ),
+                        sm=12,
+                        md=6,
+                        lg=4
+                    ),
+                ],
+                style={'margin-top': '20px'}
+            ),
+
+            # Mensaje después de resolver el reto
+            dbc.Row(
+                [
+                    dbc.Col(
+                        html.Div(id='div-resolve-message', style={'display': 'none'}),
+                        sm=12,
+                        md=12,
+                        lg=12
+                    ),
+                ],
+                style={'margin-top': '20px'}
+            ),
+        ],
+        className="dash-inside-container",
+    )
     return layout
 
 def init_callbacks(dash_app):
     @dash_app.callback(
-                        Output('row-test-tests','children'),
-                        Input('dropdown-position-tests','value'),
+        Output('dropdown-user-tests', 'options'),
+        Input('dropdown-user-tests', 'id')
     )
-    def show_test(test):
-        if test=="" or test is None: return None
-        return utils_tests.tests_values(test)
+    def update_user_dropdown(id):
+        # Leer los nombres de los usuarios de Google Sheets
+        ws = utils_google.open_ws('Postula a Digitalia (Responses)', 'Form Responses 1')
+        df = utils_google.read_ws_data(ws)
+        df["names"] = df["Nombres"] + " " + df["Apellidos"]
+        options = [{'label': name, 'value': mail} for name, mail in zip(df['names'], df['Email Address'])]
+        return options
+
+    @dash_app.callback(
+        [Output('div-error-tests', 'children'),
+         Output('dropdown-position-tests', 'style'),
+         Output('dropdown-level-tests', 'style'),
+         Output('btn-generate-tests', 'style')],
+        Input('btn-validate-tests', 'n_clicks'),
+        State('input-email-tests', 'value'),
+        State('dropdown-user-tests', 'value')
+    )
+    def validate_user(n_clicks, email_input, email_selected):
+        if n_clicks is not None:
+            if not validate_email(email_input, email_selected):
+                return "Usuario no encontrado, por favor vuelva a intentar", {'display': 'none'}, {'display': 'none'}, {'display': 'none'}
+            else:
+                return "", {}, {}, {}
+
+    @dash_app.callback(
+        Output('dropdown-position-tests', 'options'),
+        Input('dropdown-position-tests', 'id')
+    )
+    def update_position_dropdown(id):
+        #Leer los puestos abiertos de Google Sheets
+        ws = utils_google.open_ws('Postula a Digitalia (Responses)', 'portal-positions')
+        df = utils_google.read_ws_data(ws)
+        options = [{'label': position, 'value': position} for position in df['position']]
+        return options
+
+    @dash_app.callback(
+        [Output('div-challenge-tests', 'children'),
+         Output('div-challenge-tests', 'style'),
+         Output('btn-resolve-tests', 'style')],
+        Input('btn-generate-tests', 'n_clicks'),
+        State('dropdown-position-tests', 'value'),
+        State('dropdown-level-tests', 'value'),
+        State('dropdown-user-tests', 'value')
+    )
+    def update_technical_challenge(n_clicks, position, level, user_email):
+        if n_clicks is not None and level is not None and position is not None:
+            # Leer el ejemplo de Google Sheets
+            ws = utils_google.open_ws('Postula a Digitalia (Responses)', 'portal-positions')
+            df = utils_google.read_ws_data(ws)
+            example = df.loc[df['position'] == position, 'example'].iloc[0]
+
+            # Leer la información del usuario
+            ws_user = utils_google.open_ws('Postula a Digitalia (Responses)', 'Form Responses 1')
+            df_user = utils_google.read_ws_data(ws_user)
+            user_input = df_user.loc[df_user['Email Address'] == user_email, 'Cuéntanos sobre ti cuando trabajas, skills, forma de ser, etc.'].iloc[0]
+
+            # Generar el reto técnico
+            challenge = generate_technical_challenge(position, level, example, user_input)
+            return dbc.Row([
+                        dbc.Container([
+                            html.H1("Reto Técnico", className="display-3"),
+                            html.P(challenge, className="lead"),
+                        ])
+                    ]), {}, {}
+        return "", {'display': 'none'}, {'display': 'none'}
+
+    @dash_app.callback(
+        [Output('div-resolve-message', 'children'),
+         Output('div-resolve-message', 'style')],
+        Input('btn-resolve-tests', 'n_clicks'),
+        State('dropdown-user-tests', 'value'),
+        State('dropdown-position-tests', 'value'),
+        State('dropdown-level-tests', 'value'),
+        State('div-challenge-tests', 'children')
+    )
+    def resolve_challenge(n_clicks, user, position, level, challenge):
+        if n_clicks is not None:
+            # Leer los retos de Google Sheets
+            ws = utils_google.open_ws('Postula a Digitalia (Responses)', 'portal-retos')
+            df = utils_google.read_ws_data(ws)
+
+            # Añadir el nuevo reto
+            new_row = {'User': user, 'Position': position, 'Level': level, 'Challenge': challenge}
+            df = df.append(new_row, ignore_index=True)
+
+            # Guardar los retos en Google Sheets
+            utils_google.pandas_to_sheets(df, ws)
+
+            return "Genial, procede a desarrollar el reto, nuestro equipo de hunting te contactará pronto", {}
+        return None, {'display': 'none'}
