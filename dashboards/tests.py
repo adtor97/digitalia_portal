@@ -6,7 +6,6 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import openai
 import json
-import textwrap
 
 # Función para validar el EMAIL del usuario
 def validate_email(email_input, email_selected):
@@ -18,8 +17,8 @@ def validate_email(email_input, email_selected):
 # Función para generar el reto técnico
 def generate_technical_challenge(position, level, example, user_input):
     messages = [
-        {"role": "system", "content": "Eres un generador de retos técnicos cortos y creativos de tecnología en español."},
-        {"role": "user", "content": f"Necesito un reto técnico corto y específico el puesto {position} de nivel {level}. El reto debe estar estimado para 6 horas máximo, no des retos muy largos, sé creativo. Por favor escríbelo tomando en cuenta que lo leerá el candidato final. Este es un ejemplo de reto técnico: {example}. Mi experiencia y perfil es el siguiente: {user_input}."},
+        {"role": "system", "content": "Eres un generador de retos técnicos cortos y creativos de tecnología en español. Los niveles de seniority son Junior, Medium, SemiSenior y Senior. Cada nivel tiene una mayor expectativa de habilidades y experiencia."},
+        {"role": "user", "content": f"Necesito un reto técnico para un {position} de nivel {level}. El reto debe estar estimado para 6 horas máximo, no des retos muy largos, sé creativo. Por favor escríbelo tomando en cuenta que lo leerá el candidato final. Este es un ejemplo de reto técnico, solo un ejemplo, sé creativo pero con el mismo estilo y testeando mismas habilidades: {example}. Mi experiencia y perfil es el siguiente: {user_input}."},
     ]
     print(messages[1]["content"])
     response = utils_chatgpt.chat_chatgpt(messages)
@@ -64,12 +63,12 @@ def serve_layout():
                                 html.Strong("1. Elige tu nombre"),
                                 className="label"
                             ),
-                            dcc.Dropdown(id='dropdown-user-tests', style={'margin-bottom': '10px'}),
+                            dcc.Dropdown(id='dropdown-user-tests'),
                             html.Label(
                                 html.Strong("2. Ingresa tu email"),
                                 className="label"
                             ),
-                            dcc.Input(id='input-email-tests', type='text', style={'margin-bottom': '10px'}),
+                            dcc.Input(id='input-email-tests', type='text'),
                             dcc.Loading(
                                 id="loading-validate",
                                 type="circle",
@@ -81,8 +80,7 @@ def serve_layout():
                         md=6,
                         lg=4
                     ),
-                ],
-                style={'margin-bottom': '20px'}
+                ]
             ),
 
             # Dropdown para seleccionar el puesto abierto y el nivel
@@ -94,7 +92,7 @@ def serve_layout():
                                 html.Strong("3. Elige el puesto al que postulas"),
                                 className="label"
                             ),
-                            dcc.Dropdown(id='dropdown-position-tests', style={'display': 'none', 'margin-bottom': '10px'}),
+                            dcc.Dropdown(id='dropdown-position-tests', style={'display': 'none'}),
                             html.Label(
                                 html.Strong("4. Elige tu nivel"),
                                 className="label"
@@ -107,7 +105,7 @@ def serve_layout():
                                     {'label': 'SemiSenior', 'value': 'SemiSenior'},
                                     {'label': 'Senior', 'value': 'Senior'}
                                 ],
-                                style={'display': 'none', 'margin-bottom': '10px'}
+                                style={'display': 'none'}
                             ),
                             dcc.Loading(
                                 id="loading-generate",
@@ -119,8 +117,7 @@ def serve_layout():
                         md=6,
                         lg=4
                     ),
-                ],
-                style={'margin-bottom': '20px'}
+                ]
             ),
 
             # Reto técnico generado
@@ -233,12 +230,7 @@ def init_callbacks(dash_app):
 
             # Generar el reto técnico
             challenge = generate_technical_challenge(position, level, example, user_input)
-            return dbc.Row([
-                        dbc.Container([
-                            html.H1("Reto Técnico", className="display-3"),
-                            html.P(challenge, className="lead"),
-                        ])
-                    ]), {}, {}
+            return challenge, {}, {}
         return "", {'display': 'none'}, {'display': 'none'}
 
     @dash_app.callback(
