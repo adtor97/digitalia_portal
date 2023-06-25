@@ -1,4 +1,4 @@
-from dashboards import login, admin, virus, experiencia_2, mem, jj, artefacta, tests
+from dashboards import login, admin, experiencia_2, mem, jj, artefacta, tests
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -59,8 +59,8 @@ login.init_callbacks(app)
 admin_layout = admin.serve_layout()
 admin.init_callbacks(app)
 
-virus_layout = virus.serve_layout()
-virus.init_callbacks(app)
+#virus_layout = virus.serve_layout()
+#virus.init_callbacks(app)
 
 experiencia_2_layout = experiencia_2.serve_layout()
 experiencia_2.init_callbacks(app)
@@ -112,9 +112,9 @@ def display_page(pathname):
     if pathname.lower() == '/admin' and 'admin' in user["usuario_vistas"]:
         app.title = "Admin"
         return admin_layout
-    elif pathname.lower() == '/virus' and 'virus' in user["usuario_vistas"]:
-        app.title = "Virus"
-        return virus_layout
+    #elif pathname.lower() == '/virus' and 'virus' in user["usuario_vistas"]:
+    #    app.title = "Virus"
+    #    return virus_layout
     else:
         return index_layout
     # You could also return a 404 "URL not found" page here
@@ -124,7 +124,9 @@ def display_page(pathname):
 def display_links(none):
     user = session["user"]
     views = [
-            {"name":"Admin", "path":"admin"}, {"name":"Virus", "path":"virus"}, {"name":"Tests", "path":"tests"}, {"name":"MEM", "path":"mem"}, {"name":"JJ", "path":"jj"}
+            {"name":"Admin", "path":"admin"},
+            #{"name":"Virus", "path":"virus"},
+            {"name":"Tests", "path":"tests"}, {"name":"MEM", "path":"mem"}, {"name":"JJ", "path":"jj"}
             ]
 
     links = [utils.link_format(view["name"], view["path"]) for view in views if view["path"] in user["usuario_vistas"]]

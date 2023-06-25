@@ -18,7 +18,7 @@ def validate_email(email_input, email_selected):
 def generate_technical_challenge(position, level, example, user_input):
     messages = [
         {"role": "system", "content": "Eres un generador de retos técnicos cortos y creativos de tecnología en español. Los niveles de seniority son Junior, Medium, SemiSenior y Senior. Cada nivel tiene una mayor expectativa de habilidades y experiencia."},
-        {"role": "user", "content": f"Necesito un reto técnico para un {position} de nivel {level}. El reto debe estar estimado para 6 horas máximo, no des retos muy largos, sé creativo. Por favor escríbelo tomando en cuenta que lo leerá el candidato final. Este es un ejemplo de reto técnico, solo un ejemplo, sé creativo pero con el mismo estilo y testeando mismas habilidades: {example}. Mi experiencia y perfil es el siguiente: {user_input}."},
+        {"role": "user", "content": f"Necesito un reto técnico para un postulante al puesto {position} de nivel {level}, da las indicaciones específicas para este nivel. El reto debe estar estimado para 6 horas máximo, no des retos muy largos, sé creativo. Por favor escríbelo tomando en cuenta que lo leerá el candidato final. Este es un ejemplo de reto técnico, solo un ejemplo, sé creativo pero con el mismo estilo y testeando mismas habilidades: {example}. Mi experiencia y perfil es el siguiente: {user_input}."},
     ]
     print(messages[1]["content"])
     response = utils_chatgpt.chat_chatgpt(messages)

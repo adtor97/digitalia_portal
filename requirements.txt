@@ -20,6 +20,7 @@ paramiko
 Pillow==9.2.0
 plotly==5.10.0
 plotly-express==0.4.1
+pydf
 pyexcel==0.7.0
 pyexcel-io==0.6.6
 pyexcel-webio==0.1.4
