@@ -7,7 +7,6 @@ from dash.dependencies import Input, Output, State
 from flask import request, session, render_template, send_file, json, make_response, render_template_string
 from datetime import datetime, date
 from utils import utils, utils_google
-import pydf
 import io
 import pandas as pd
 from waitress import serve
